@@ -5,6 +5,8 @@ public class Player {
 	 *  Player's stats and inventory
 	 *  Some functions related to player's stats and inventory
 	 */
+	public String name;
+	
 	//base stats
 	public int strength; //increases damage
 	public int stamina; //increases health
@@ -30,6 +32,10 @@ public class Player {
 		skill = 5 + Main.rollDice(4, 2);
 		speed = 5 + Main.rollDice(4, 2);
 		luck = 5 + Main.rollDice(4, 2);
+		
+		System.out.print("What is your name, traveler? \n > ");
+		name = Main.s.nextLine().trim();
+		System.out.println();
 		
 		ChooseClass();
 	}
@@ -84,7 +90,7 @@ public class Player {
 					luck += Main.rollDice(6, 2) - Main.rollDice(6, 2);
 					wep = new Weapon(-1);
 					armour = new Armour(-1);
-					pClass = "Almighty Bonsey";
+					pClass = "Bonsey";
 					break;
 				case "hackerman": //dev mode
 					strength = 255;
