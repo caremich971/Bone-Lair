@@ -303,6 +303,7 @@ public class Room {
 				System.out.println("help/h: \n > Shows the Command List. Synonyms are seperated by slashes; use only one of them. Parameters are in <>.\n");
 				System.out.println("inventory/inv/i: \n > Opens inventory (shows items & stats)\n");
 				System.out.println("use/eat/equip/c <slot number>: \n > Uses or equips the item in the given inventory slot.\n");
+				System.out.println("examine/x <slot number>: \n > Examine an object in the given inventory slot.\n");
 				System.out.println("quit/q: \n > Quit the game.\n");
 				
 				System.out.println("\n - Battle Commands - Can be used in battle. ");
@@ -315,6 +316,21 @@ public class Room {
 				System.out.println("\n");
 				return true;
 			case "i":
+				while (true) {
+					//print out inventory
+					System.out.println(Main.p.name + " the " + Main.p.pClass);
+					System.out.println("HP: " + Main.p.curHP + "/" + Main.p.maxHP);
+					System.out.println("STATS:");
+					System.out.println(" > " + Main.p.strength + " STR");
+					System.out.println(" > " + Main.p.stamina + " STM");
+					System.out.println(" > " + Main.p.skill + " SKL");
+					System.out.println(" > " + Main.p.speed + " SPE");
+					System.out.println(" > " + Main.p.luck + " LCK\n");
+					System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=>");
+					System.out.printf(" |  %-20s |%n", "Inventory");
+					System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=>\n");
+					break;
+				}
 				return true;
 			case "q":
 				System.out.print("Are you sure you want to quit? [Y/N] \n > ");

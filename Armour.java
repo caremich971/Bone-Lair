@@ -42,7 +42,7 @@ public class Armour extends Item {  //Extends Item, so we can put it in ArrayLis
 			case 4:
 				name = "Hermes' Boots";
 				shorthand = "Hermes Boots";
-				description = "Increases movement speed. Now to find an aglet...";
+				description = "Increases speed. Now you just need an aglet...";
 				encumbrance = -4;
 				break;
 			case 5:
@@ -54,7 +54,7 @@ public class Armour extends Item {  //Extends Item, so we can put it in ArrayLis
 			case 6:
 				name = "Ninja Clothes";
 				shorthand = "NinjaClothes";
-				description = "Not very protective, but it makes you feel cool.";
+				description = "Not very protective, but it's pretty cool.";
 				defense = 3;
 				encumbrance = -2;
 				break;
@@ -78,7 +78,7 @@ public class Armour extends Item {  //Extends Item, so we can put it in ArrayLis
 				break;
 		}
 		
-		if(shorthand.equals(null)) {
+		if(shorthand == null) {
 			shorthand = name;
 		}
 	}

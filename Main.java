@@ -12,9 +12,6 @@ public class Main {
 	public static Scanner s = new Scanner(System.in);
 	public static HashMap<String, Room> rooms = new HashMap<String, Room>();
 	
-	public static String newPage = //30 newlines, for rooms
-			"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-	
 	public static void main(String[] args) {
 		new Main().startAdventure();
 	}
@@ -147,6 +144,12 @@ public class Main {
 				case "quit":
 					t[i] = "q";
 					break;
+				case "bad":
+					//code
+					//since there's no break here, it goes to the next case without leaving the switch
+				case "string":
+					//code
+					break; //leave the switch statement
 			}
 		}
 		

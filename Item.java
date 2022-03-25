@@ -23,7 +23,7 @@ public class Item {
 				break;
 			case 1:
 				name = "Bone First Aid";
-				shorthand = "Bone-Aid";
+				shorthand = "Boned-Aid";
 				description = "Bone appétit! Heals 30 health.";
 				break;
 			case 2:
@@ -94,20 +94,34 @@ public class Item {
 		}
 	}
 	
-	public boolean Use(String name, Player user) { //true if the item was consumed, false otherwise
+	public boolean Use(Player user) { //true if the item was consumed, false otherwise
 		switch(name) {
-			case "bonehealjuice":
+			case "Bone-Healing Juice":
 				if(user.curHP != user.maxHP) {
 					int restore = 15;
 					if(user.curHP + restore > user.maxHP) {
 						restore = user.maxHP - user.curHP;
 					}
 					user.curHP += restore;
-					System.out.println("You drink the juice, and your bones are repaired. ");
+					System.out.println("You drink the juice, and your bones are repaired. " + restore + " HP was restored.");
 					return true;
 				} else {
+					System.out.println("You're at full health.");
 					return false;
 				}
+				case "Bone First Aid":
+					if(user.curHP != user.maxHP) {
+						int restore = 30;
+						if(user.curHP + restore > user.maxHP) {
+							restore = user.maxHP - user.curHP;
+						}
+						user.curHP += restore;
+						System.out.println("A small skeleton pops out of the kit and aids your bones. " + restore + " HP was restored.");
+						return true;
+					} else {
+						System.out.println("You're at full health.");
+						return false;
+					}
 		}
 		return false;
 	}
