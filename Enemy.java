@@ -31,6 +31,18 @@ public class Enemy {
 				crit = 1;
 				drops = new Item[] { new Item(0) };
 				break;
+				
+			case 1:
+				name = "WIZARD"; //All caps for stylization
+				maxHP = 26;
+				HP = maxHP;
+				damage = 10;
+				hit = 48;
+				speed = 7;
+				luck = 5;
+				defense = -1;
+				crit = 1;
+				break;
 		}
 	}
 }

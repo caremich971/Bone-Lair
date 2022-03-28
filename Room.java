@@ -34,6 +34,8 @@ public class Room {
 			case 4:
 				id = "gallery";
 				title = "Art Gallery";
+				flags.put("examinedPainting", 0);
+				flags.put("foughtWizard", 0);
 				break;
 			case 5:
 				id = "t-hall";
@@ -148,13 +150,13 @@ public class Room {
 							enterRoom("garg hall", "s");
 							break;
 						case "w":
+							enterRoom("gallery", "e");
 							break;
 						case "e":
 							break;
 						case "x":
 							if(cmd[1].equals("chest")) {
 								room.flags.put("firstEntry", 0);
-								Main.rooms.put(room.id, room);
 								RoomObject.inspectObj("bonseyChest", room);
 								continue;
 							} else {
@@ -195,6 +197,57 @@ public class Room {
 							break;
 					}
 					break;
+				// Room 4 Painting Hall
+				case "gallery":
+					switch(cmd[0]) {
+					default:
+						System.out.println("\n(Invalid input; try again)");
+						continue;
+					case "n":
+						break;
+					case "s":
+						if(room.flags.get("examinedPainting") == 1) {
+							enterRoom("levers 1", "n");
+						}
+						else {
+							System.out.println("\n(Invalid input; try again)");
+						}
+						break;
+					case "w":
+						enterRoom("dark maze", "e");
+						break;
+					case "e":
+						enterRoom("start", "w");
+						break;
+					case "x":
+						if(cmd[1].equals("wizard")) {
+							if(room.flags.get("foughtWizard") == 1) {
+								System.out.println("\nThe painting is empty.");
+								continue;
+							} else {
+								room.flags.put("foughtWizard", 1);
+								System.out.println("You approach the painting but you notice something odd. The wizard seems to be moving and he definelty doesn't look friendly as he launches his first attack your way. (Enter anything to continue...) ");
+								String in = Main.s.next();
+								Battler.battle(Main.p, 1);
+								continue;
+							}
+							
+						}
+						if(cmd[1].equals("skeleton")) {
+							if(room.flags.get("examinedPainting") == 1) {
+								System.out.println("\nThe painting has been moved on to the floor revealing a hidden passageway.");
+								continue;
+							} else {
+								room.flags.put("examinedPainting", 1);
+								System.out.println("\nYou approach the painting of the skeleton and when you examine it more closely notice it has a hinge allowing it to pull open like a door revealing a secret passage!");
+								enterRoom("levers 1", "n");
+							}
+						}
+						break;
+
+					}
+					break;
+					
 			}
 			break;
 		}
@@ -303,6 +356,7 @@ public class Room {
 				System.out.println("help/h: \n > Shows the Command List. Synonyms are seperated by slashes; use only one of them. Parameters are in <>.\n");
 				System.out.println("inventory/inv/i: \n > Opens inventory (shows items & stats)\n");
 				System.out.println("use/eat/equip/c <slot number>: \n > Uses or equips the item in the given inventory slot.\n");
+				System.out.println("examine/x <slot number>: \n > Examine an object in the given inventory slot.\n");
 				System.out.println("quit/q: \n > Quit the game.\n");
 				
 				System.out.println("\n - Battle Commands - Can be used in battle. ");
@@ -315,6 +369,21 @@ public class Room {
 				System.out.println("\n");
 				return true;
 			case "i":
+				while (true) {
+					//print out inventory
+					System.out.println(Main.p.name + " the " + Main.p.pClass);
+					System.out.println("HP: " + Main.p.curHP + "/" + Main.p.maxHP);
+					System.out.println("STATS:");
+					System.out.println(" > " + Main.p.strength + " STR");
+					System.out.println(" > " + Main.p.stamina + " STM");
+					System.out.println(" > " + Main.p.skill + " SKL");
+					System.out.println(" > " + Main.p.speed + " SPE");
+					System.out.println(" > " + Main.p.luck + " LCK\n");
+					System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=>");
+					System.out.printf(" |  %-20s |%n", "Inventory");
+					System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=>\n");
+					break;
+				}
 				return true;
 			case "q":
 				System.out.print("Are you sure you want to quit? [Y/N] \n > ");
