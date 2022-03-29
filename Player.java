@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.*;
 
 public class Player {
 	/* Contains:
@@ -43,7 +43,7 @@ public class Player {
 	public void ChooseClass() { //classes change stats and determine starting gear. may also have special abilities if we have time
 		System.out.print("Choose a class:\n\n [1] Knight\n   >> Well-rounded stats.\n\n [2] Rogue\n   >> Fast and skillful, but a little weak.\n\n [3] Barbarian\n   >> Very strong, but bad hit.\n\n [4] Paladin\n   >> Slow, but tanky and reliable.\n\n > ");
 		while(true) {
-			String in = Main.s.nextLine().toLowerCase().trim();
+			String in = Main.s.nextLine().trim().toLowerCase();
 			switch(in) {
 				default:
 					continue;
@@ -108,6 +108,39 @@ public class Player {
 		//once the base stats are finalized, calculate HP
 		maxHP = stamina*2;
 		curHP = maxHP;
+	}
+	
+	public void addToInv(Item item) {
+		if(inventory.size() < 9) {
+			inventory.add(item);
+		} else {
+			while(true) {
+				System.out.println("Inventory full! Choose which item to throw out: ");
+				for(int i = 1; i <= 9; i++) {
+					System.out.println(" [" + i + "] " + inventory.get(i-1).name);
+				}
+				System.out.print(" [0] " + item.name + "\n > ");
+				
+				int in;
+				try {
+					in = Main.s.nextInt();
+				} catch(InputMismatchException e) {
+					System.out.println("\n(Invalid input; try again)");
+					continue;
+				}
+				
+				if(in == 0) {
+					System.out.println("Threw out a " + item.name + ".");
+				} else if (in <= 9) {
+					System.out.println("Threw out a " + inventory.get(--in).name + ".");
+					inventory.set(in, item);
+				} else {
+					System.out.println("\n(Invalid input; try again)");
+					continue;
+				}
+				break;
+			}
+		}
 	}
 	
 	public void checkHP() {

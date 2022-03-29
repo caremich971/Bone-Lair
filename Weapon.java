@@ -72,7 +72,7 @@ public class Weapon extends Item { //Extends Item, so we can put it in ArrayList
 				break;
 			case 9:
 				name = "Torch";
-				description = "Doesn't seem to go out.";
+				description = "Doesn't seem to go out. Lights up a dark area. \n(This is a weapon and will only work if equipped!)";
 				damage = 2;
 				hit = 80;
 				crit = 0;
@@ -97,5 +97,10 @@ public class Weapon extends Item { //Extends Item, so we can put it in ArrayList
 		if(shorthand == null) {
 			shorthand = name;
 		}
+	}
+
+	//overrides from Item so we can load armour from inventory
+	public Weapon toWep() {
+		return this;
 	}
 }
