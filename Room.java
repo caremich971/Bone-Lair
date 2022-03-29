@@ -239,7 +239,7 @@ public class Room {
 							} else {
 								room.flags.put("foughtWizard", 1);
 								System.out.println("You approach the painting but you notice something odd. The wizard seems to be moving and he definelty doesn't look friendly as he launches his first attack your way. (Enter anything to continue...) ");
-								String in = Main.s.next();
+								in = Main.s.next();
 								Battler.battle(Main.p, 1);
 								continue;
 							}
@@ -275,11 +275,11 @@ public class Room {
 			case "start":
 				if(flags.get("firstEntry") == 1) {
 					d = "This is it: the Bone Lair, the dungeon that no adventurer has ever come out of alive. \n\n"
-						+ "You’ve decided to come here, seeking the glory of being the first to survive. Not only that, but they say that the dungeon is full of hidden treasures.\n"
+						+ "You've decided to come here, seeking the glory of being the first to survive. Not only that, but they say that the dungeon is full of hidden treasures.\n"
 						+ "Primed for adventure, you enter the dungeon, on the lookout for treasure.\n\n"
 						+ "In front of you lies a treasure chest, with a skeleton-shaped key in the lock. Well, that was easy! \n\n"
 						+ "There are also three hallways leading out of this room: one to the north, one to the east, and one to the west. \n"
-						+ "However, for whatever reason, you have an overwhelming feeling that you should shout “H”.";
+						+ "However, for whatever reason, you have an overwhelming feeling that you should shout \"H\".";
 				} else {
 					if(flags.get("openedBonsey") == 1) {
 						d = "You're in the entrance of the dungeon. Or, where it would have been; the entrance closed while you fought the skeleton.\n\n"
