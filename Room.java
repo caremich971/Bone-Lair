@@ -11,7 +11,8 @@ public class Room {
 	//using string hashmaps for legibility
 	HashMap<String, Integer> flags = new HashMap<String, Integer>();
 	
-	public Room(int n) {
+	//room constructor - input is a sole integer so we can create all the rooms with a for loop
+	public Room(int n) { 
 		switch(n) {
 			//IMPORTANT: room numerical IDs should be in order and no numbers should be skipped. this is so we can easily make all the rooms; the room numID is otherwise irrelevant
 			case 1: //starting at 1 because that's the first ID on the map (lucid.app/lucidchart/eee19849-2090-436f-9463-3d37bb6abd7f/edit?invitationId=inv_0aeb1baa-9193-4733-b685-afc1225b7281)
@@ -110,6 +111,10 @@ public class Room {
 				title = "Bone Shrine";
 				break;
 			case 23:
+				id = "foo";
+				title = "Indeterminate";
+				break;
+			case 24:
 				id = "final boss";
 				title = "Bone Throne";
 				break;
@@ -129,7 +134,8 @@ public class Room {
 			
 			System.out.println(room.getDesc(dir));
 			System.out.print("\n > ");
-			String[] cmd = Main.parseCommand(Main.s.nextLine());
+			String in = Main.s.nextLine();
+			String[] cmd = Main.parseCommand(in);
 			
 			//First, check if any default commands were inputted. If so, don't execute any more code, because we already executed the command
 			if(roomCmds(cmd[0], cmd[1], room)) {
@@ -148,16 +154,22 @@ public class Room {
 							continue;
 						case "n":
 							enterRoom("garg hall", "s");
+							room.flags.put("firstEntry", 0);
 							break;
 						case "w":
+							room.flags.put("firstEntry", 0);
 							enterRoom("gallery", "e");
 							break;
 						case "e":
+							room.flags.put("firstEntry", 0);
 							break;
 						case "x":
 							if(cmd[1].equals("chest")) {
-								room.flags.put("firstEntry", 0);
-								RoomObject.inspectObj("bonseyChest", room);
+								if(room.flags.get("openedBonsey") == 1) {
+									System.out.println("An empty chest. There's nothing here.");
+								} else {
+									System.out.println("The chest is large, made of silver and steel. The key is in the lock; turning it is very tempting.");
+								}
 								continue;
 							} else {
 								System.out.println("\n(Invalid input; try again)");
@@ -172,7 +184,7 @@ public class Room {
 									room.flags.put("firstEntry", 0);
 									room.flags.put("openedBonsey", 1);
 									System.out.println("You turn the key. A click can be heard as the chest unlocks. \n\nYou found... (Enter anything to continue...) ");
-									String in = Main.s.next();
+									in = Main.s.next();
 									
 									System.out.println("THE SKELETON APPEARS \n\n(Enter anything to continue...) ");
 									in = Main.s.next();
@@ -263,10 +275,11 @@ public class Room {
 			case "start":
 				if(flags.get("firstEntry") == 1) {
 					d = "This is it: the Bone Lair, the dungeon that no adventurer has ever come out of alive. \n\n"
-						+ "Youíve decided to come here, seeking the glory of being the first to survive. Not only that, but they say that the dungeon is full of hidden treasures.\n"
+						+ "You‚Äôve decided to come here, seeking the glory of being the first to survive. Not only that, but they say that the dungeon is full of hidden treasures.\n"
 						+ "Primed for adventure, you enter the dungeon, on the lookout for treasure.\n\n"
 						+ "In front of you lies a treasure chest, with a skeleton-shaped key in the lock. Well, that was easy! \n\n"
-						+ "There are also three hallways leading out of this room: one to the north, one to the east, and one to the west. However, for whatever reason, you have an overwhelming feeling that you should shout ìHî.";
+						+ "There are also three hallways leading out of this room: one to the north, one to the east, and one to the west. \n"
+						+ "However, for whatever reason, you have an overwhelming feeling that you should shout ‚ÄúH‚Äù.";
 				} else {
 					if(flags.get("openedBonsey") == 1) {
 						d = "You're in the entrance of the dungeon. Or, where it would have been; the entrance closed while you fought the skeleton.\n\n"
@@ -287,7 +300,7 @@ public class Room {
 					switch(flags.get("triggers")) {
 						case 0:
 							d = "You enter a long, narrow corridor, with gargoyles lining the walls. \n"
-									+ "Nothing else is here, but you get the uncanny feeling that youíre being watched. \n"
+									+ "Nothing else is here, but you get the uncanny feeling that you‚Äôre being watched. \n"
 									+ "There are 2 exits; one north, one south.";
 							break;
 						case 1:
@@ -336,11 +349,15 @@ public class Room {
 		return d;
 	}
 
-	//For commands like help and inventory which are completely static (i.e. are the same in every room). Returns true if a command was executed, false otherwise
+	//For commands like help and inventory which are completely static (i.e. are the same in every room). 
+	//Returns true if a command was executed and the room should re-print, false if the room should keep checking for more commands
 	public static boolean roomCmds(String cmd, String parameter, Room room) {
 		String in;
+		int x;
 		switch(cmd) {
+			//PRINT LIST OF COMMANDS (HELP)
 			case "h":
+				//output is a bit hard to read. TODO: make the output from the help command nicer
 				System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=>");
 				System.out.printf(" |  %-20s |%n", "Command List");
 				System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=>\n");
@@ -350,41 +367,166 @@ public class Room {
 				System.out.println("take/grab/pickup/t <object>: \n > Attempt to put an object in a room into your inventory.\n");
 				System.out.println("open/o <object>: \n > Open a container in a room. May be locked.\n");
 				System.out.println("examine/x <object>: \n > Examine an object in a room. You may have further actions.\n");
-				System.out.println("back/exit/b: \n > Stop examining an object, if you're examining an object, or close your inventory, if it's open. \n");
 				System.out.println("smash/hit/attack/destroy/a <object>: \n > Attempt to destroy an object.\n");
 				
 				System.out.println("help/h: \n > Shows the Command List. Synonyms are seperated by slashes; use only one of them. Parameters are in <>.\n");
-				System.out.println("inventory/inv/i: \n > Opens inventory (shows items & stats)\n");
-				System.out.println("use/eat/equip/c <slot number>: \n > Uses or equips the item in the given inventory slot.\n");
+				System.out.println("inventory/inv/i: \n > Opens inventory (shows your items & stats)\n");
+				System.out.println("use/eat/drink/equip <slot number>: \n > Uses or equips the item in the given inventory slot.\n");
 				System.out.println("examine/x <slot number>: \n > Examine an object in the given inventory slot.\n");
 				System.out.println("quit/q: \n > Quit the game.\n");
 				
 				System.out.println("\n - Battle Commands - Can be used in battle. ");
 				System.out.println("attack/a: \n > Attack foe.\n");
-				System.out.println("inventory/inv/i: \n > Opens inventory (shows items & stats)\n");
-				System.out.println("use/eat/equip/c <item>: \n > Uses or equips the given item.\n");
+				System.out.println("inventory/inv/i: \n > Opens inventory (shows your items & stats)\n");
+				System.out.println("use/eat/drink/equip <item>: \n > Uses or equips the given item.\n");
 				System.out.print("back/exit/b: \n > Exit your inventory.\n\n(Enter anything to continue...) ");
 				
 				in = Main.s.next();
 				System.out.println("\n");
 				return true;
+				
+			//INVENTORY
 			case "i":
-				while (true) {
-					//print out inventory
-					System.out.println(Main.p.name + " the " + Main.p.pClass);
-					System.out.println("HP: " + Main.p.curHP + "/" + Main.p.maxHP);
-					System.out.println("STATS:");
-					System.out.println(" > " + Main.p.strength + " STR");
-					System.out.println(" > " + Main.p.stamina + " STM");
-					System.out.println(" > " + Main.p.skill + " SKL");
-					System.out.println(" > " + Main.p.speed + " SPE");
-					System.out.println(" > " + Main.p.luck + " LCK\n");
-					System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=>");
-					System.out.printf(" |  %-20s |%n", "Inventory");
-					System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=>\n");
-					break;
+				//print out stats
+				System.out.println(Main.p.name + " the " + Main.p.pClass);
+				System.out.println("HP: " + Main.p.curHP + "/" + Main.p.maxHP);
+				System.out.println("STATS:");
+				System.out.println(" > " + Main.p.strength + " STR");
+				System.out.println(" > " + Main.p.stamina + " STM");
+				System.out.println(" > " + Main.p.skill + " SKL");
+				System.out.println(" > " + Main.p.speed + " SPE");
+				System.out.println(" > " + Main.p.luck + " LCK\n");
+				
+				//print out inventory
+				System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=>");
+				
+				System.out.printf(" | %-20s |%n", "Weapon: " + Main.p.wep.shorthand);
+				System.out.printf(" | %-20s |%n", "Armour: " + Main.p.armour.shorthand);
+				
+				if(Main.p.inventory.size() > 0) {
+					System.out.printf(" | %-20s |%n", "Items:  ");
+					for(int i = 1; i <= Main.p.inventory.size(); i++) {
+						System.out.printf(" | %-20s |%n", " [" + i + "] " + Main.p.inventory.get(i-1).shorthand);
+					}
+				} else {
+					System.out.printf(" | %-20s |%n", "Items: (none)");
+				}
+				
+				System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=>");
+				return true;
+			
+			//EXAMINE ITEM IN INVENTORY
+			case "x":
+				try { //if you examined a number, then it continues with the code...
+					x = Integer.parseInt(parameter) - 1;
+				} catch(NumberFormatException e) { //otherwise, it realizes that you're examining something in the room and returns false
+					return false;
+				}
+				
+				try {  //print out the description, if the item exists
+					Item i = Main.p.inventory.get(x);
+					
+					if(i.getClass() == Weapon.class) { //examine weapon
+						Weapon w = i.toWep();
+						
+						System.out.println("\n\n <=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=>");
+						System.out.printf(" |  %-30s |%n", w.name);
+						System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=>");
+						System.out.printf("%d damage | %d hit | %d crit%n", w.damage, w.hit, w.crit);
+							
+						System.out.println(w.description);
+						
+					} else if(i.getClass() == Armour.class) { //examine armour
+						Armour a = i.toArmour();
+							
+						System.out.println("\n\n <=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=>");
+						System.out.printf(" |  %-30s |%n", a.name);
+						System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=>");
+						System.out.printf("%d defense | %d encumbrance%n", a.defense, a.encumbrance);
+						
+						System.out.println(a.description);
+					} else { //examine other
+						System.out.println("\n\n <=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=>");
+						System.out.printf(" |  %-30s |%n", i.name);
+						System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=>");
+								
+						System.out.print(i.description);
+					}
+					
+				} catch(IndexOutOfBoundsException e) { //if the number you inputted doesn't exist, then it tells you and does nothing
+					System.out.println("\n(Invalid input; try again)");
 				}
 				return true;
+			
+			//USE AN ITEM IN INVENTORY
+			case "use":
+				try { //if you entered a number, then it continues with the code...
+					x = Integer.parseInt(parameter) - 1;
+				} catch(NumberFormatException e) { //otherwise, it stops the code
+					System.out.println("\n(Invalid input; try again)");
+					return true;
+				}
+				
+				try { //use the item, if the item exists
+					Item i = Main.p.inventory.get(x);
+					return i.use(Main.p, x);
+				} catch(IndexOutOfBoundsException e) { //if the number you inputted doesn't exist, then it tells you and does nothing
+					System.out.println("\n(Invalid input; try again)");
+					return true;
+				}
+			
+			//EAT AN ITEM IN INVENTORY
+			case "eat": case "consume":
+				try { //if you entered a number, then it continues with the code...
+					x = Integer.parseInt(parameter) - 1;
+				} catch(NumberFormatException e) { //otherwise, it stops the code
+					System.out.println("\n(Invalid input; try again)");
+					return true;
+				}
+				
+				try { //eat the item, if the item exists
+					Item i = Main.p.inventory.get(x);
+					return i.eat(Main.p, x);
+				} catch(IndexOutOfBoundsException e) { //if the number you inputted doesn't exist, then it tells you and does nothing
+					System.out.println("\n(Invalid input; try again)");
+					return true;
+				}
+			
+			//DRINK AN ITEM IN INVENTORY
+			case "drink":
+				try { //if you entered a number, then it continues with the code...
+					x = Integer.parseInt(parameter) - 1;
+				} catch(NumberFormatException e) { //otherwise, it stops the code
+					System.out.println("\n(Invalid input; try again)");
+					return true;
+				}
+				
+				try { //drink the item, if the item exists
+					Item i = Main.p.inventory.get(x);
+					return i.drink(Main.p, x);
+				} catch(IndexOutOfBoundsException e) { //if the number you inputted doesn't exist, then it tells you and does nothing
+					System.out.println("\n(Invalid input; try again)");
+					return true;
+				}
+			
+			//EQUIP AN ITEM IN INVENTORY
+			case "equip":
+				try { //if you entered a number, then it continues with the code...
+					x = Integer.parseInt(parameter) - 1;
+				} catch(NumberFormatException e) { //otherwise, it stops the code
+					System.out.println("\n(Invalid input; try again)");
+					return true;
+				}
+				
+				try { //equip the item, if the item exists
+					Item i = Main.p.inventory.get(x);
+					return i.equip(Main.p, x);
+				} catch(IndexOutOfBoundsException e) { //if the number you inputted doesn't exist, then it tells you and does nothing
+					System.out.println("\n(Invalid input; try again)");
+					return true;
+				}
+				
+			//EXIT GAME
 			case "q":
 				System.out.print("Are you sure you want to quit? [Y/N] \n > ");
 				

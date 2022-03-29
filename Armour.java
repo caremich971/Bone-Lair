@@ -5,7 +5,6 @@ public class Armour extends Item {  //Extends Item, so we can put it in ArrayLis
 	 */
 	int defense = 0;
 	int encumbrance = 0; //subtracted from speed when it's checked
-	int health = 0; //added to max HP
 	
 	//Armour constructor. I like to use an ID and a switch because it's easier to use and read compared to a constructor with a bunch of variables that you never remember
 	public Armour(int id) {
@@ -81,5 +80,22 @@ public class Armour extends Item {  //Extends Item, so we can put it in ArrayLis
 		if(shorthand == null) {
 			shorthand = name;
 		}
+	}
+	
+	//override use and equip
+	public boolean equip(Player user, int index) {
+		Main.p.inventory.set(index, user.armour);
+		Main.p.armour = this;
+		System.out.println("Equipped the " + name + ".");
+		return true;
+	}
+	
+	public boolean use(Player user, int index) {
+		return equip(user, index);
+	}
+	
+	//overrides from Item so we can load armour from inventory
+	public Armour toArmour() {
+		return this;
 	}
 }

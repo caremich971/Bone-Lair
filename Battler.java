@@ -6,6 +6,7 @@ public class Battler {
 	 *  Battle text
 	 */
 	
+	//Combat is a bit boring. If we have time, maybe improve it?
 	public static void battle(Player p, int enemy) {
 		Enemy e = new Enemy(enemy);
 		int turn = 1;
@@ -187,7 +188,8 @@ public class Battler {
 		//item drops
 		if(e.drops != null) {
 			for(Item i : e.drops) {
-				System.out.println("You got the " + i.name + "! (Non-functional for now as inventory is unimplemented)");
+				System.out.println("You got the " + i.name + "!");
+				p.addToInv(i);
 			}
 		}
 		
