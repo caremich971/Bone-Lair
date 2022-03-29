@@ -35,6 +35,8 @@ public class Room {
 			case 4:
 				id = "gallery";
 				title = "Art Gallery";
+				flags.put("examinedPainting", 0);
+				flags.put("foughtWizard", 0);
 				break;
 			case 5:
 				id = "t-hall";
@@ -156,6 +158,7 @@ public class Room {
 							break;
 						case "w":
 							room.flags.put("firstEntry", 0);
+							enterRoom("gallery", "e");
 							break;
 						case "e":
 							room.flags.put("firstEntry", 0);
@@ -206,6 +209,57 @@ public class Room {
 							break;
 					}
 					break;
+				// Room 4 Painting Hall
+				case "gallery":
+					switch(cmd[0]) {
+					default:
+						System.out.println("\n(Invalid input; try again)");
+						continue;
+					case "n":
+						break;
+					case "s":
+						if(room.flags.get("examinedPainting") == 1) {
+							enterRoom("levers 1", "n");
+						}
+						else {
+							System.out.println("\n(Invalid input; try again)");
+						}
+						break;
+					case "w":
+						enterRoom("dark maze", "e");
+						break;
+					case "e":
+						enterRoom("start", "w");
+						break;
+					case "x":
+						if(cmd[1].equals("wizard")) {
+							if(room.flags.get("foughtWizard") == 1) {
+								System.out.println("\nThe painting is empty.");
+								continue;
+							} else {
+								room.flags.put("foughtWizard", 1);
+								System.out.println("You approach the painting but you notice something odd. The wizard seems to be moving and he definelty doesn't look friendly as he launches his first attack your way. (Enter anything to continue...) ");
+								String in = Main.s.next();
+								Battler.battle(Main.p, 1);
+								continue;
+							}
+							
+						}
+						if(cmd[1].equals("skeleton")) {
+							if(room.flags.get("examinedPainting") == 1) {
+								System.out.println("\nThe painting has been moved on to the floor revealing a hidden passageway.");
+								continue;
+							} else {
+								room.flags.put("examinedPainting", 1);
+								System.out.println("\nYou approach the painting of the skeleton and when you examine it more closely notice it has a hinge allowing it to pull open like a door revealing a secret passage!");
+								enterRoom("levers 1", "n");
+							}
+						}
+						break;
+
+					}
+					break;
+					
 			}
 			break;
 		}
@@ -221,11 +275,11 @@ public class Room {
 			case "start":
 				if(flags.get("firstEntry") == 1) {
 					d = "This is it: the Bone Lair, the dungeon that no adventurer has ever come out of alive. \n\n"
-						+ "Youíve decided to come here, seeking the glory of being the first to survive. Not only that, but they say that the dungeon is full of hidden treasures.\n"
+						+ "You‚Äôve decided to come here, seeking the glory of being the first to survive. Not only that, but they say that the dungeon is full of hidden treasures.\n"
 						+ "Primed for adventure, you enter the dungeon, on the lookout for treasure.\n\n"
 						+ "In front of you lies a treasure chest, with a skeleton-shaped key in the lock. Well, that was easy! \n\n"
 						+ "There are also three hallways leading out of this room: one to the north, one to the east, and one to the west. \n"
-						+ "However, for whatever reason, you have an overwhelming feeling that you should shout ìHî.";
+						+ "However, for whatever reason, you have an overwhelming feeling that you should shout ‚ÄúH‚Äù.";
 				} else {
 					if(flags.get("openedBonsey") == 1) {
 						d = "You're in the entrance of the dungeon. Or, where it would have been; the entrance closed while you fought the skeleton.\n\n"
@@ -246,7 +300,7 @@ public class Room {
 					switch(flags.get("triggers")) {
 						case 0:
 							d = "You enter a long, narrow corridor, with gargoyles lining the walls. \n"
-									+ "Nothing else is here, but you get the uncanny feeling that youíre being watched. \n"
+									+ "Nothing else is here, but you get the uncanny feeling that you‚Äôre being watched. \n"
 									+ "There are 2 exits; one north, one south.";
 							break;
 						case 1:
