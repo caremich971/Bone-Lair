@@ -37,11 +37,12 @@ public class Enemy {
 				maxHP = 26;
 				HP = maxHP;
 				damage = 10;
-				hit = 48;
+				hit = 68;
 				speed = 7;
 				luck = 5;
-				defense = -1;
+				defense = 0;
 				crit = 1;
+				drops = new Item[] { new Item(16) };
 				break;
 		}
 	}

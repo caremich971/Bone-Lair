@@ -256,6 +256,7 @@ public class Room {
 							} else {
 								room.flags.put("foughtWizard", 1);
 								System.out.println("You approach the painting but you notice something odd. \nThe wizard seems to be moving and he definelty doesn't look friendly as he launches his first attack your way. (Enter anything to continue...) ");
+                
 								in = Main.s.next();
 								Battler.battle(Main.p, 1);
 								continue;
@@ -367,7 +368,7 @@ public class Room {
 				if(flags.get("examinedPainting") == 0 && flags.get("foughtWizard") == 0) {
 					d = "You enter a gallery, full of various paintings.\n"
 					+ "Two of them catch your attention; a painting of a crazy-looking wizard to your north, and a painting of a familiar-looking skeleton to the south.\n"
-					+ "Otherwise, there’s nothing of note, other than the exits to the west and the east.";
+					+ "Otherwise, thereï¿½s nothing of note, other than the exits to the west and the east.";
 				}
 				else if(flags.get("examinedPainting") == 1 && flags.get("foughtWizard") == 0) {
 					d = "You enter a gallery, full of various paintings.\n"

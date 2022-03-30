@@ -12,9 +12,6 @@ public class Main {
 	public static Scanner s = new Scanner(System.in);
 	public static HashMap<String, Room> rooms = new HashMap<String, Room>();
 	
-	public static String newPage = //30 newlines, for rooms
-			"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-	
 	public static void main(String[] args) {
 		new Main().startAdventure();
 	}
@@ -34,7 +31,7 @@ public class Main {
 		Room.enterRoom("start", "s");
 	}
 	
-	//Dice Roller
+	//Dice Roller - used for stats, combat, skill checks, and basically anything which revolves around rng
 	public static int rollDice(int d, int n) { //rolls n d-sided dice. e.g: if d = 6 and n = 2, it rolls 2 6-sided dice. rolling 1 dice makes all outcomes equally likely, while rolling multiple favours values towards the middle.
 		int sum = 0;
 		for(int i = 0; i < n; i++) {
@@ -135,8 +132,8 @@ public class Main {
 				case "help": case "commands": case "cmd": case "command": case "info": case "cmds":
 					t[i] = "h";
 					break;
-				case "use": case "eat": case "consume": case "equip": case "put": //letting players say "eat sword" is a lot easier than having "use sword" and "use potion" be different commands
-					t[i] = "c"; //u is used for up and e is used for east so I guess we're using c for C O N S U M E
+				case "put":
+					t[i] = "use"; 
 					break;
 				case "examine": case "look": case "read":
 					t[i] = "x";
@@ -146,6 +143,11 @@ public class Main {
 					break;
 				case "quit":
 					t[i] = "q";
+					break;
+					
+				//other words
+				case "over":
+					t[i] = "across";
 					break;
 			}
 		}
