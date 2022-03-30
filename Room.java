@@ -209,6 +209,23 @@ public class Room {
 							break;
 					}
 					break;
+				//Fountain Room
+				case "fountain":
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+						case "s":
+							break;
+						case "n":
+							break;
+						case "e":
+							break;
+						case "w":
+							break;
+						case "x":
+							break;
+					}
 				// Room 4 Painting Hall
 				case "gallery":
 					switch(cmd[0]) {
@@ -238,7 +255,8 @@ public class Room {
 								continue;
 							} else {
 								room.flags.put("foughtWizard", 1);
-								System.out.println("You approach the painting but you notice something odd. The wizard seems to be moving and he definelty doesn't look friendly as he launches his first attack your way. (Enter anything to continue...) ");
+								System.out.println("You approach the painting but you notice something odd. \nThe wizard seems to be moving and he definelty doesn't look friendly as he launches his first attack your way. (Enter anything to continue...) ");
+                
 								in = Main.s.next();
 								Battler.battle(Main.p, 1);
 								continue;
@@ -251,7 +269,7 @@ public class Room {
 								continue;
 							} else {
 								room.flags.put("examinedPainting", 1);
-								System.out.println("\nYou approach the painting of the skeleton and when you examine it more closely notice it has a hinge allowing it to pull open like a door revealing a secret passage!");
+								System.out.println("\nYou approach the painting of the skeleton and when examined has a hinge along one of the edges. \nAllowing you to pull it open like a door revealing a secret passage!");
 								enterRoom("levers 1", "n");
 							}
 						}
@@ -300,7 +318,7 @@ public class Room {
 					switch(flags.get("triggers")) {
 						case 0:
 							d = "You enter a long, narrow corridor, with gargoyles lining the walls. \n"
-									+ "Nothing else is here, but you get the uncanny feeling that you’re being watched. \n"
+									+ "Nothing else is here, but you get the uncanny feeling that you're being watched. \n"
 									+ "There are 2 exits; one north, one south.";
 							break;
 						case 1:
@@ -342,6 +360,29 @@ public class Room {
 					break;
 				} else {
 					d = "TODO";
+				}
+				break;
+				
+			//Gallery
+			case "gallery":
+				if(flags.get("examinedPainting") == 0 && flags.get("foughtWizard") == 0) {
+					d = "You enter a gallery, full of various paintings.\n"
+					+ "Two of them catch your attention; a painting of a crazy-looking wizard to your north, and a painting of a familiar-looking skeleton to the south.\n"
+					+ "Otherwise, there�s nothing of note, other than the exits to the west and the east.";
+				}
+				else if(flags.get("examinedPainting") == 1 && flags.get("foughtWizard") == 0) {
+					d = "You enter a gallery, full of various paintings.\n"
+					+  "One of them catches your attention; a painting of a crazy looking wizard to your north.\n"
+					+ "Otherwise, there's nothing of note, other than the secret entrance you found to the south and the normal exits to the west and the east.";
+				}
+				else if(flags.get("examinedPainting") == 0 && flags.get("foughtWizard") == 1) 
+					d = "You enter a gallery, full of various paintings.\n"
+					+ "One of them catches your attention; a painting of a familiar-looking skeleton to the south.\n"
+					+ "Otherwise, there's  nothing of note, other than the exits to the west and the east.";
+				else {
+					d = "You enter a gallery, full of various paintings.\n"
+					+ "There's nothing of note, other than the secret entrance you found to the south and the normal exits to the west and the east.\n";		
+						
 				}
 				break;
 		}
