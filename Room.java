@@ -322,13 +322,13 @@ public class Room {
 							System.out.println("\n(Invalid input; try again)");
 							continue;
 						case "s":
-							enterRoom("pit room", "w");
+							enterRoom("pit room", "n");
 							break;
 						case "e":
 							enterRoom("take1leave1", "w");
 							break;
 						case "w":
-							enterRoom("start", "w");
+							enterRoom("start","e");
 							break;
 						case "x":
 							break;
@@ -339,8 +339,6 @@ public class Room {
 						default:
 							System.out.println("\n(Invalid input; try again)");
 							continue;
-						case "n":
-							break;
 						case "s":
 							if(room.flags.get("examinedPainting") == 1) {
 								enterRoom("levers 1", "n");
@@ -698,7 +696,7 @@ public class Room {
 			//Room 9: Library
 			case "take1leave1":
 				d = "You enter a library. At the centre of the library, between four bookshelves, is a table, with a number of objects. \n"
-					+ "The table has a sign that says “Take One, Leave One,” and contains the following: \n";
+					+ "The table has a sign that says Â“Take One, Leave One,Â” and contains the following: \n";
 				int n = 0;
 				for(Item i : items) {
 					n++;
