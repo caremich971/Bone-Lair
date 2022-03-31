@@ -99,6 +99,18 @@ public class Weapon extends Item { //Extends Item, so we can put it in ArrayList
 		}
 	}
 
+	//override use and equip
+	public boolean equip(Player user, int index) {
+		user.inventory.set(index, user.wep);
+		user.wep = this;
+		System.out.println("Equipped the " + name + ".");
+		return true;
+	}
+	
+	public boolean use(Player user, int index) {
+		return equip(user, index);
+	}
+	
 	//overrides from Item so we can load armour from inventory
 	public Weapon toWep() {
 		return this;

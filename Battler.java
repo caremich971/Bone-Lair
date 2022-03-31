@@ -193,8 +193,7 @@ public class Battler {
 			}
 		}
 		
-		System.out.print("\n(Enter anything to continue...)");
-		String in = Main.s.next();
+		Main.enterAnything();
 	}
 	
 	//Randomly selects a text based on an ID. Used for battles
