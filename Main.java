@@ -40,6 +40,14 @@ public class Main {
 		return sum;
 	}
 	
+	//used when we want the player to enter anything to continue. 
+	public static void enterAnything() {
+		System.out.print("(Enter anything to continue...)");
+		String in = Main.s.nextLine();
+		
+		System.out.println();
+	}
+	
 	//Command Parser
 	public static String[] parseCommand(String text) {
 		text = text.trim().toLowerCase();

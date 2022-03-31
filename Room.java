@@ -118,6 +118,10 @@ public class Room {
 				id = "final boss";
 				title = "Bone Throne";
 				break;
+			default:
+				id = "dummy";
+				title = "";
+				break;
 		}
 	}
 	
@@ -183,11 +187,11 @@ public class Room {
 								} else {
 									room.flags.put("firstEntry", 0);
 									room.flags.put("openedBonsey", 1);
-									System.out.println("You turn the key. A click can be heard as the chest unlocks. \n\nYou found... (Enter anything to continue...) ");
-									in = Main.s.next();
+									System.out.println("You turn the key. A click can be heard as the chest unlocks. \n\nYou found...");
+									Main.enterAnything();
 									
-									System.out.println("THE SKELETON APPEARS \n\n(Enter anything to continue...) ");
-									in = Main.s.next();
+									System.out.println("THE SKELETON APPEARS \n\n ");
+									Main.enterAnything();
 									
 									Battler.battle(Main.p, 0);
 									continue;
@@ -238,8 +242,8 @@ public class Room {
 								continue;
 							} else {
 								room.flags.put("foughtWizard", 1);
-								System.out.println("You approach the painting but you notice something odd. The wizard seems to be moving and he definelty doesn't look friendly as he launches his first attack your way. (Enter anything to continue...) ");
-								String in = Main.s.next();
+								System.out.println("You approach the painting but you notice something odd. The wizard seems to be moving and he definelty doesn't look friendly as he launches his first attack your way.");
+								Main.enterAnything();
 								Battler.battle(Main.p, 1);
 								continue;
 							}
@@ -275,11 +279,11 @@ public class Room {
 			case "start":
 				if(flags.get("firstEntry") == 1) {
 					d = "This is it: the Bone Lair, the dungeon that no adventurer has ever come out of alive. \n\n"
-						+ "You’ve decided to come here, seeking the glory of being the first to survive. Not only that, but they say that the dungeon is full of hidden treasures.\n"
+						+ "You've decided to come here, seeking the glory of being the first to survive. Not only that, but they say that the dungeon is full of hidden treasures.\n"
 						+ "Primed for adventure, you enter the dungeon, on the lookout for treasure.\n\n"
 						+ "In front of you lies a treasure chest, with a skeleton-shaped key in the lock. Well, that was easy! \n\n"
 						+ "There are also three hallways leading out of this room: one to the north, one to the east, and one to the west. \n"
-						+ "However, for whatever reason, you have an overwhelming feeling that you should shout “H”.";
+						+ "However, for whatever reason, you have an overwhelming feeling that you should shout \"H\".";
 				} else {
 					if(flags.get("openedBonsey") == 1) {
 						d = "You're in the entrance of the dungeon. Or, where it would have been; the entrance closed while you fought the skeleton.\n\n"
@@ -379,10 +383,9 @@ public class Room {
 				System.out.println("attack/a: \n > Attack foe.\n");
 				System.out.println("inventory/inv/i: \n > Opens inventory (shows your items & stats)\n");
 				System.out.println("use/eat/drink/equip <item>: \n > Uses or equips the given item.\n");
-				System.out.print("back/exit/b: \n > Exit your inventory.\n\n(Enter anything to continue...) ");
+				System.out.print("back/exit/b: \n > Exit your inventory.\n\n");
 				
-				in = Main.s.next();
-				System.out.println("\n");
+				Main.enterAnything();
 				return true;
 				
 			//INVENTORY
@@ -469,7 +472,7 @@ public class Room {
 				
 				try { //use the item, if the item exists
 					Item i = Main.p.inventory.get(x);
-					return i.use(Main.p, x);
+					return i.use(Main.p, x, room);
 				} catch(IndexOutOfBoundsException e) { //if the number you inputted doesn't exist, then it tells you and does nothing
 					System.out.println("\n(Invalid input; try again)");
 					return true;
@@ -486,7 +489,7 @@ public class Room {
 				
 				try { //eat the item, if the item exists
 					Item i = Main.p.inventory.get(x);
-					return i.eat(Main.p, x);
+					return i.eat(Main.p, x, room);
 				} catch(IndexOutOfBoundsException e) { //if the number you inputted doesn't exist, then it tells you and does nothing
 					System.out.println("\n(Invalid input; try again)");
 					return true;
@@ -503,7 +506,7 @@ public class Room {
 				
 				try { //drink the item, if the item exists
 					Item i = Main.p.inventory.get(x);
-					return i.drink(Main.p, x);
+					return i.drink(Main.p, x, room);
 				} catch(IndexOutOfBoundsException e) { //if the number you inputted doesn't exist, then it tells you and does nothing
 					System.out.println("\n(Invalid input; try again)");
 					return true;

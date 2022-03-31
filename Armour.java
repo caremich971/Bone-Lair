@@ -84,8 +84,8 @@ public class Armour extends Item {  //Extends Item, so we can put it in ArrayLis
 	
 	//override use and equip
 	public boolean equip(Player user, int index) {
-		Main.p.inventory.set(index, user.armour);
-		Main.p.armour = this;
+		user.inventory.set(index, user.armour);
+		user.armour = this;
 		System.out.println("Equipped the " + name + ".");
 		return true;
 	}

@@ -118,7 +118,7 @@ public class Item {
 	}
 	
 	//Use item. These are booleans so that they don't use a turn in combat if nothing happens
-	public boolean use(Player user, int index) { 
+	public boolean use(Player user, int index, Room room) { 
 		switch(name) {
 			case "Bone-Healing Juice":
 				if(user.curHP != user.maxHP) {
@@ -153,18 +153,18 @@ public class Item {
 	}
 	
 	//item-specific synonyms
-	public boolean eat(Player user, int index) {
+	public boolean eat(Player user, int index, Room room) {
 		if(edible) {
-			return use(user, index);
+			return use(user, index, new Room(0));
 		} else {
 			System.out.println("Probably wouldn't go down well...");
 			return false;
 		}
 	}
 
-	public boolean drink(Player user, int index) {
+	public boolean drink(Player user, int index, Room room) {
 		if(drinkable) {
-			return use(user, index);
+			return use(user, index, new Room(0));
 		} else {
 			System.out.println("Probably wouldn't go down well...");
 			return false;
