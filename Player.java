@@ -41,8 +41,8 @@ public class Player {
 	}
 	
 	public void ChooseClass() { //classes change stats and determine starting gear. may also have special abilities if we have time
-		System.out.print("Choose a class:\n\n [1] Knight\n   >> Well-rounded stats.\n\n [2] Rogue\n   >> Fast and skillful, but a little weak.\n\n [3] Barbarian\n   >> Very strong, but bad hit.\n\n [4] Paladin\n   >> Slow, but tanky and reliable.\n\n > ");
 		while(true) {
+			System.out.print("Choose a class:\n\n [1] Knight\n   >> Well-rounded stats.\n\n [2] Rogue\n   >> Fast and skillful, but a little weak.\n\n [3] Barbarian\n   >> Very strong, but bad hit.\n\n [4] Paladin\n   >> Slow, but tanky and reliable.\n\n > ");
 			String in = Main.s.nextLine().trim().toLowerCase();
 			switch(in) {
 				default:
@@ -141,6 +141,31 @@ public class Player {
 				break;
 			}
 		}
+	}
+	
+	//skill check. average difficulty is 16-18
+	public boolean skillCheck(int difficulty, String stat) {
+		int base;
+		switch(stat) {
+			case "strength":
+				base = strength;
+				break;
+			case "stamina":
+				base = stamina;
+				break;
+			case "speed": 
+				base = speed;
+				break;
+			default: 
+			case "skill":
+				base = skill;
+				break;
+			case "luck":
+				base = luck;
+				break;
+		}
+		
+		return (Main.rollDice(12, 1) + base >= difficulty);
 	}
 	
 	public void checkHP() {

@@ -43,8 +43,9 @@ public class Item {
 				drinkable = true;
 				break;
 			case 4:
-				name = "Yellow Potion";
-				description = "A yellow potion. Smells like honey.";
+				name = "Honeycomb";
+				description = "Full of delicious honey.";
+				edible = true;
 				drinkable = true;
 				break;
 			case 5:
@@ -59,11 +60,11 @@ public class Item {
 				break;
 			case 7:
 				name = "Fast Clock";
-				description = "A strange clock. It's moving much too fast.";
+				description = "A strange clock. The hands are moving far too quickly.";
 				break;
 			case 8:
 				name = "Golden Omlette";
-				description = "Dropped on the floor. Probably still good.";
+				description = "It fell on the floor, but it's probably still good.";
 				edible = true;
 				break;
 			case 9:
@@ -118,7 +119,7 @@ public class Item {
 	}
 	
 	//Use item. These are booleans so that they don't use a turn in combat if nothing happens
-	public boolean use(Player user, int index) { 
+	public boolean use(Player user, int index, Room room) { 
 		switch(name) {
 			case "Bone-Healing Juice":
 				if(user.curHP != user.maxHP) {
@@ -153,18 +154,18 @@ public class Item {
 	}
 	
 	//item-specific synonyms
-	public boolean eat(Player user, int index) {
+	public boolean eat(Player user, int index, Room room) {
 		if(edible) {
-			return use(user, index);
+			return use(user, index, new Room(0));
 		} else {
 			System.out.println("Probably wouldn't go down well...");
 			return false;
 		}
 	}
 
-	public boolean drink(Player user, int index) {
+	public boolean drink(Player user, int index, Room room) {
 		if(drinkable) {
-			return use(user, index);
+			return use(user, index, new Room(0));
 		} else {
 			System.out.println("Probably wouldn't go down well...");
 			return false;
@@ -172,7 +173,7 @@ public class Item {
 	}
 	
 	//equip weapon or armour. does nothing for normal items
-	public boolean equip(Player user, int index) { 
+	public boolean equip(Player user, int index, Room room) { 
 		System.out.println("You can only equip weapons and armour.");
 		return false;
 	}
