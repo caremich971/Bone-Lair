@@ -43,9 +43,8 @@ public class Item {
 				drinkable = true;
 				break;
 			case 4:
-				name = "Honeycomb";
-				description = "Full of delicious honey.";
-				edible = true;
+				name = "Yellow Potion";
+				description = "A yellow potion. Smells like honey.";
 				drinkable = true;
 				break;
 			case 5:
@@ -60,11 +59,11 @@ public class Item {
 				break;
 			case 7:
 				name = "Fast Clock";
-				description = "A strange clock. The hands are moving far too quickly.";
+				description = "A strange clock. It's moving much too fast.";
 				break;
 			case 8:
 				name = "Golden Omlette";
-				description = "It fell on the floor, but it's probably still good.";
+				description = "Dropped on the floor. Probably still good.";
 				edible = true;
 				break;
 			case 9:
@@ -149,6 +148,12 @@ public class Item {
 					System.out.println("You're at full health.");
 					return false;
 				}
+			case "Empty Flask":
+				if(room.id.equals("fountain")) {
+					user.inventory.set(index, new Item(16)); // Need to make this fountain water flask
+					System.out.println("You fill the flask with the water from the fountain. You feel like this could come in handy later.");
+					return true;
+				}
 		}
 		return false;
 	}
@@ -173,7 +178,7 @@ public class Item {
 	}
 	
 	//equip weapon or armour. does nothing for normal items
-	public boolean equip(Player user, int index, Room room) { 
+	public boolean equip(Player user, int index) { 
 		System.out.println("You can only equip weapons and armour.");
 		return false;
 	}
