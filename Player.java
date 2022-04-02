@@ -143,6 +143,31 @@ public class Player {
 		}
 	}
 	
+	//skill check. average difficulty is 16-18
+	public boolean skillCheck(int difficulty, String stat) {
+		int base;
+		switch(stat) {
+			case "strength":
+				base = strength;
+				break;
+			case "stamina":
+				base = stamina;
+				break;
+			case "speed": 
+				base = speed;
+				break;
+			default: 
+			case "skill":
+				base = skill;
+				break;
+			case "luck":
+				base = luck;
+				break;
+		}
+		
+		return (Main.rollDice(12, 1) + base >= difficulty);
+	}
+	
 	public void checkHP() {
 		if(curHP <= 0) {
 			System.out.print("\n\nYOU DIED!");

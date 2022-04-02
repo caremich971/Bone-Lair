@@ -11,6 +11,9 @@ public class Room {
 	//using string hashmaps for legibility
 	HashMap<String, Integer> flags = new HashMap<String, Integer>();
 	
+	//this needs to be in all rooms
+	ArrayList<Item> items = null;
+	
 	//room constructor - input is a sole integer so we can create all the rooms with a for loop
 	public Room(int n) { 
 		switch(n) {
@@ -31,7 +34,6 @@ public class Room {
 			case 3:
 				id = "fountain";
 				title = "Sparkling Fountain";
-				flags.put("drankFountain", 0);
 				break;
 			case 4:
 				id = "gallery";
@@ -58,6 +60,13 @@ public class Room {
 			case 9:
 				id = "take1leave1";
 				title = "Library";
+				flags.put("credit", 0);
+				items = new ArrayList<Item>();
+				items.add(new Item(13));
+				items.add(new Item(14));
+				items.add(new Armour(4));
+				items.add(new Item(1));
+				items.add(new Item(5));
 				break;
 			case 10:
 				id = "pit room";
@@ -73,7 +82,7 @@ public class Room {
 				break;
 			case 13:
 				id = "fight club";
-				title = "Colosseum";
+				title = "Fighting Ring";
 				break;
 			case 14:
 				id = "spike pit";
@@ -85,14 +94,14 @@ public class Room {
 				break;
 			case 16:
 				id = "chest room";
-				title = "Secret Passage";
+				title = "Secret Tunnel";
 				break;
 			case 17:
 				id = "sphinx";
 				title = "Sphinx's Lair";
 				break;
 			case 18:
-				id = "minotaur fight";
+				id = "minotaur";
 				title = "Hallway";
 				break;
 			case 19:
@@ -112,10 +121,18 @@ public class Room {
 				title = "Bone Shrine";
 				break;
 			case 23:
-				id = "foo";
-				title = "Indeterminate";
+				id = "golden idol";
+				title = "The Golden Idol";
 				break;
 			case 24:
+				id = "hand hall";
+				title = "Corridor";
+				break;
+			case 25:
+				id = "rocks fall";
+				title = "Mineshaft";
+				break;
+			case 26:
 				id = "final boss";
 				title = "Bone Throne";
 				break;
@@ -126,7 +143,8 @@ public class Room {
 		}
 	}
 	
-	//Enter a room; parameters are the room ID and the direction from which the room was entered
+	//Enter a room; parameters are the room ID and the direction you came from
+	//dir should be a char but w/e
 	public static void enterRoom(String sID, String dir) {
 		Room room = Main.rooms.get(sID);
 		
@@ -158,8 +176,8 @@ public class Room {
 							System.out.println("\n(Invalid input; try again)");
 							continue;
 						case "n":
-							enterRoom("garg hall", "s");
 							room.flags.put("firstEntry", 0);
+							enterRoom("garg hall", "s");
 							break;
 						case "w":
 							room.flags.put("firstEntry", 0);
@@ -167,7 +185,7 @@ public class Room {
 							break;
 						case "e":
 							room.flags.put("firstEntry", 0);
-							enterRoom("fountain", "w");
+							enterRoom("fountain", "e");
 							break;
 						case "x":
 							if(cmd[1].equals("chest")) {
@@ -211,123 +229,363 @@ public class Room {
 						default:
 							System.out.println("\n(Invalid input; try again)");
 							continue;
+						case "n":
+							//burn players who cross the hall, but not those who turn around
+							if(dir.equals("s")) {
+								boolean dodgeFlame = Main.p.skillCheck(19 - room.flags.get("triggers"), "speed"); //do a speed check...
+								
+								int flameDamage;
+								if(dodgeFlame) { //to reduce flame damage
+									flameDamage = 4 - Main.p.armour.defense;
+								} else {
+									flameDamage = 10 - Main.p.armour.defense;
+								}
+								if(flameDamage < 0) {
+									flameDamage = 0;
+								}
+								
+								//then tell the player they got burned, with changing text based on what happened
+								if(room.flags.get("triggers") == 0) {
+									if(dodgeFlame) {
+										System.out.printf("As you walk forward, the gargoyles' eyes and mouths begin to glow orange. You instinctively rush forward to the end of the hall.\n"
+												+ "It's a good thing, too - because these gargoyles breathe fire! They singed you a little as you ran past - you take %d damage.%n%n", flameDamage);
+									} else {
+										System.out.printf("As you walk forward, the gargoyles' eyes and mouths begin to glow orange.\n"
+												+ "Suddenly, their mouths unhinge and breathe fire! You get absolutely smoked on your way out, and take %d damage.%n%n", flameDamage);
+									}
+								} else {
+									if(dodgeFlame) {
+										System.out.printf("You walk forward, the gargoyles' eyes and mouths begin to glow orange again. This time, you're prepared, and rush to the exit.\n"
+												+ "You almost escape, but get singed a little - you take %d damage.%n%n", flameDamage);
+									} else {
+										System.out.printf("As you walk forward, the gargoyles' eyes and mouths begin to glow orange again. This time, you're prepared, and rush to the exit.\n"
+												+ "Sadly, you can't outrun flames. You get absolutely smoked on your way out, and take %d damage.%n%n", flameDamage);
+									}
+								}
+								//Actually damage the player
+								Main.p.curHP -= flameDamage;
+								Main.p.checkHP();
+								
+								Main.enterAnything();
+							}
+							
+							enterRoom("t-hall", "s");
+							break;
 						case "s":
+							//burn players who cross the hall, but not those who turn around
+							if(dir.equals("n")) {
+								boolean dodgeFlame = Main.p.skillCheck(19 - room.flags.get("triggers"), "speed"); //do a speed check...
+								
+								int flameDamage;
+								if(dodgeFlame) { //to reduce flame damage
+									flameDamage = 4 - Main.p.armour.defense;
+								} else {
+									flameDamage = 10 - Main.p.armour.defense;
+								}
+								if(flameDamage < 0) {
+									flameDamage = 0;
+								}
+								
+								//then tell the player they got burned, with changing text based on what happened
+								if(room.flags.get("triggers") == 0) {
+									if(dodgeFlame) {
+										System.out.printf("As you walk forward, the gargoyles' eyes and mouths begin to glow orange. You instinctively rush forward to the end of the hall.\n"
+												+ "It's a good thing, too - because these gargoyles breathe fire! They singed you a little as you ran past - you take %d damage.%n%n", flameDamage);
+									} else {
+										System.out.printf("As you walk forward, the gargoyles' eyes and mouths begin to glow orange.\n"
+												+ "Suddenly, their mouths unhinge and breathe fire! You get absolutely smoked on your way out, and take %d damage.%n%n", flameDamage);
+									}
+								} else {
+									if(dodgeFlame) {
+										System.out.printf("You walk forward, the gargoyles' eyes and mouths begin to glow orange again. This time, you're prepared, and rush to the exit.\n"
+												+ "You almost escape, but get singed a little - you take %d damage.%n%n", flameDamage);
+									} else {
+										System.out.printf("As you walk forward, the gargoyles' eyes and mouths begin to glow orange again. This time, you're prepared, and rush to the exit.\n"
+												+ "Sadly, you can't outrun flames. You get absolutely smoked on your way out, and take %d damage.%n%n", flameDamage);
+									}
+								}
+								//Actually damage the player
+								Main.p.curHP -= flameDamage;
+								Main.p.checkHP();
+								
+								Main.enterAnything();
+							}
+							
+							enterRoom("start", "n");
 							break;
 					}
 					break;
-				//Fountain Room
+				//Room 3 Fountain Room
 				case "fountain":
 					switch(cmd[0]) {
 						default:
 							System.out.println("\n(Invalid input; try again)");
 							continue;
 						case "s":
-							enterRoom("pit room", "n");
+							enterRoom("pit room", "w");
 							break;
 						case "e":
 							enterRoom("take1leave1", "w");
 							break;
 						case "w":
-							enterRoom("entrance", "e");
+							enterRoom("start", "w");
 							break;
 						case "x":
-							if(cmd[1].equals("fountain")) {
-								System.out.println("The water flowing through the fountain looks oddly aluring...");
-							}
-							else {
-								System.out.println("\n(Invalid input; try again)");
-							}
-							continue;
-						case "drink":
-							if(cmd[1].equals("fountain")) {
-								if(room.flags.get("drankFountain") == 2) {
-									System.out.println("After that last drink there's no way you're going near that fountain again. You don't know what it'll do to you.");
-								}
-								else if  (room.flags.get("drankFountain") == 1) {
-									System.out.print("After the last drink you feel 10 years younger! \nYou decide to take another sip of the miraculous liquid and you can feel its effects immediately. You soon notice in a panic that the effects are too potent!\nYou feel yourself go from the body of a 25 year old to the body of a 12 year old in seconds and the experience is definitely unplesant.\n-2 Strength -2 Stamina");
-									Main.p.stamina = Main.p.stamina-2;
-									Main.p.strength = Main.p.strength-2;
-									Main.p.curHP = Main.p.maxHP;
-									room.flags.put("drankFountain", 2);
-								}
-								else {
-									System.out.print("You walk over to the fountain and slowly take a long sip.\nThe effects start quickly with all of your aches and pains fading away.\nAfter the process you feel good as new!");
-									Main.p.curHP = Main.p.maxHP;
-									room.flags.put("drankFountain", 1);
-								}
-								continue;
-							}
-							if(cmd[1].equals("water")) {
-								if(room.flags.get("drankFountain") == 2) {
-									System.out.println("After that last drink there's no way you're going near that fountain again. You don't know what it'll do to you.");
-								}
-								else if  (room.flags.get("drankFountain") == 1) {
-									System.out.print("After the last drink you feel 10 years younger! \nYou decide to take another sip of the miraculous liquid and you can feel its effects immediately. You soon notice in a panic that the effects are too potent!\nYou feel yourself go from the body of a 25 year old to the body of a 12 year old in seconds and the experience is definitely unplesant.\n-2 Strength -2 Stamina");
-									Main.p.stamina = Main.p.stamina-2;
-									Main.p.strength = Main.p.strength-2;
-									Main.p.curHP = Main.p.maxHP;
-									room.flags.put("drankFountain", 2);
-								}
-								else {
-									System.out.print("You walk over to the fountain and slowly take a long sip.\nThe effects start quickly with all of your aches and pains fading away.\nAfter the process you feel good as new!");
-									Main.p.curHP = Main.p.maxHP;
-									room.flags.put("drankFountain", 1);
-								}
-								continue;
-							}
-							
-						break;
+							break;
 					}
 				// Room 4 Painting Hall
 				case "gallery":
 					switch(cmd[0]) {
-					default:
-						System.out.println("\n(Invalid input; try again)");
-						continue;
-					case "s":
-						if(room.flags.get("examinedPainting") == 1) {
-							enterRoom("levers 1", "n");
-						}
-						else {
+						default:
 							System.out.println("\n(Invalid input; try again)");
-						}
-						break;
-					case "w":
-						enterRoom("dark maze", "e");
-						break;
-					case "e":
-						enterRoom("start", "w");
-						break;
-					case "x":
-						if(cmd[1].equals("wizard")) {
-							if(room.flags.get("foughtWizard") == 1) {
-								System.out.println("\nThe painting is empty.");
+							continue;
+						case "n":
+							break;
+						case "s":
+							if(room.flags.get("examinedPainting") == 1) {
+								enterRoom("levers 1", "n");
+							}
+							else {
+								System.out.println("\n(Invalid input; try again)");
 								continue;
-							} else {
-								room.flags.put("foughtWizard", 1);
-								System.out.println("You approach the painting but you notice something odd. The wizard seems to be moving and he definelty doesn't look friendly as he launches his first attack your way.");
-								Main.enterAnything();
+							}
+						case "w":
+							enterRoom("dark maze", "e");
+							break;
+						case "e":
+							enterRoom("start", "w");
+							break;
+						case "x":
+							if(cmd[1].equals("wizard")) {
+								if(room.flags.get("foughtWizard") == 1) {
+									System.out.println("\nThe painting is empty.");
+									continue;
+								} else {
+									room.flags.put("foughtWizard", 1);
+									System.out.println("You approach the painting, but you notice something odd. The wizard seems to be moving, and he definitely doesn't look friendly as he launches his first attack your way.");
+									Main.enterAnything();
                 
-								Battler.battle(Main.p, 1);
+									Battler.battle(Main.p, 1);
+									continue;
+								}
+							
+							}
+							if(cmd[1].equals("skeleton")) {
+								if(room.flags.get("examinedPainting") == 1) {
+									System.out.println("\nThe painting has been moved onto the floor revealing a hidden passageway.");
+									continue;
+								} else {
+									room.flags.put("examinedPainting", 1);
+									System.out.println("\nYou approach the painting of the skeleton and notice something strange - a hinge along one of the edges. \n"
+													+ "You pull it open like a door, revealing a secret passage!");
+									enterRoom("levers 1", "n");
+								}
+							}
+							break;
+					}
+				
+				
+				case "t-hall": //Room 5: Crossroads
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+					
+				case "magic mirror": //Room 6: Mirror Bedroom
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+					
+				case "frozen warrior": //Room 7: Frozen Warrior
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+					
+				case "levers 1": //Room 8: Lever Room
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					} 
+					
+				//Room 9: Library
+				case "take1leave1":
+					int x;
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+						case "w":
+							enterRoom("fountain", "e");
+							break;
+						case "s":
+							enterRoom("fountain", "n");
+							break;
+							
+						//leave an item
+						case "leave": case "put": case "place":
+							try { //if you entered a number, then it continues with the code...
+								x = Integer.parseInt(cmd[1]) - 1;
+							} catch(NumberFormatException e) { //otherwise, it stops the code
+								System.out.println("\n(Invalid input; try again)");
 								continue;
 							}
 							
-						}
-						if(cmd[1].equals("skeleton")) {
-							if(room.flags.get("examinedPainting") == 1) {
-								System.out.println("\nThe painting has been moved on to the floor revealing a hidden passageway.");
+							try { //place the item, if the item exists
+								room.items.add(Main.p.inventory.get(x));
+								System.out.println("Left the " + Main.p.inventory.get(x).name + ".");
+								Main.p.inventory.remove(x);
+								room.flags.put("credit", room.flags.get("credit") + 1);
 								continue;
-							} else {
-								room.flags.put("examinedPainting", 1);
-								System.out.println("\nYou approach the painting of the skeleton and when examined has a hinge along one of the edges. \nAllowing you to pull it open like a door revealing a secret passage!");
-								enterRoom("levers 1", "n");
+							} catch(IndexOutOfBoundsException e) { //if the number you inputted doesn't exist, then it tells you and does nothing
+								System.out.println("\n(Invalid input; try again)");
+								continue;
 							}
-						}
-						continue;
-
+							
+						//take an item
+						case "t":
+							try { //if you entered a number, then it continues with the code...
+								x = Integer.parseInt(cmd[1]) - 1;
+							} catch(NumberFormatException e) { //otherwise, it stops the code
+								System.out.println("\n(Invalid input; try again)");
+								continue;
+							}
+							
+							try { //take the item, if the item exists
+								Main.p.inventory.add(room.items.get(x));
+								System.out.println("Took the " + room.items.get(x).name + ".");
+								room.items.remove(x);
+								room.flags.put("credit", room.flags.get("credit") - 1);
+								continue;
+							} catch(IndexOutOfBoundsException e) { //if the number you inputted doesn't exist, then it tells you and does nothing
+								System.out.println("\n(Invalid input; try again)");
+								continue;
+							}
 					}
-					break;
 					
+				case "pit room": //Room 10: Pitfall
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "dark maze": //Room 11: Maze of Darkness
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "friendly guide": //Room 12: Guided Crossroads
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "fight club": //Room 13: Fighting Ring
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "spike pit": //Room 14: Spike Pit Bottom
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "time wizard": //Room 15: Clockwork Abode
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "chest room": //Room 16: Hidden Mimic Room
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "sphinx": //Room 17: Sphinx's Lair
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "minotaur": //Room 18: Minotaur Fight
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "ambrosia": //Room 19: Ambrosia Lab
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "bees": //Room 20: Beehive
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "levers 2": //Room 21: Lever Puzzle
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "bonesy shrine": //Room 22: Bonesy Shrine
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "golden idol": //Room 23: Golden Idol
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "hand hall": //Room 24: Hand Hall
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "rocks fall": //Room 25: Unstable Mineshaft
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
+
+				case "final boss": //Room 26: Bone Throne
+					switch(cmd[0]) {
+						default:
+							System.out.println("\n(Invalid input; try again)");
+							continue;
+					}
 			}
 			break;
 		}
@@ -409,37 +667,53 @@ public class Room {
 							+ "All that's left is the exits; one north, one south.";
 					break;
 				} else {
-					d = "TODO";
+					//TODO
+					d = "TODO: when the gargoyles are disabled";
 				}
 				break;
-			
-			//Sparkling Fountain	
-			case "fountain":
-				d = "You enter a pleasant-looking room which resembles a forest clearing. Though you’re still indoors, the floor is covered in grass, and the walls are lined with trees. \n"
-						+ "However, what really draws your attention is the large fountain in the middle of the clearing. The water is sparkling, and just standing here you feel healthier.\n"
-						+ "There are exits to the west, east, and south, but it might be nice to stay a while...\n";
-					break;
+				
 			//Gallery
 			case "gallery":
 				if(flags.get("examinedPainting") == 0 && flags.get("foughtWizard") == 0) {
 					d = "You enter a gallery, full of various paintings.\n"
-					+ "Two of them catch your attention; a painting of a crazy-looking wizard to your north, and a painting of a familiar-looking skeleton to the south.\n"
-					+ "Otherwise, thereï¿½s nothing of note, other than the exits to the west and the east.";
+					+ "Two of them catch your attention: a painting of a crazy-looking wizard to your north, and a painting of a familiar-looking skeleton to the south.\n"
+					+ "Otherwise, there's nothing of note, other than the exits to the west and the east.";
 				}
 				else if(flags.get("examinedPainting") == 1 && flags.get("foughtWizard") == 0) {
 					d = "You enter a gallery, full of various paintings.\n"
-					+  "One of them catches your attention; a painting of a crazy looking wizard to your north.\n"
+					+  "One of them catches your attention: a painting of a crazy looking wizard to your north.\n"
 					+ "Otherwise, there's nothing of note, other than the secret entrance you found to the south and the normal exits to the west and the east.";
 				}
 				else if(flags.get("examinedPainting") == 0 && flags.get("foughtWizard") == 1) 
 					d = "You enter a gallery, full of various paintings.\n"
-					+ "One of them catches your attention; a painting of a familiar-looking skeleton to the south.\n"
+					+ "One of them catches your attention: a painting of a familiar-looking skeleton to the south.\n"
 					+ "Otherwise, there's  nothing of note, other than the exits to the west and the east.";
 				else {
 					d = "You enter a gallery, full of various paintings.\n"
 					+ "There's nothing of note, other than the secret entrance you found to the south and the normal exits to the west and the east.\n";		
 						
 				}
+				break;
+				
+			//Room 9: Library
+			case "take1leave1":
+				d = "You enter a library. At the centre of the library, between four bookshelves, is a table, with a number of objects. \n"
+					+ "The table has a sign that says “Take One, Leave One,” and contains the following: \n";
+				int n = 0;
+				for(Item i : items) {
+					n++;
+					d += " [" + n + "] " + i.name + "\n";
+				}
+				
+				if(flags.get("credit") > 0) {
+					d += "You've left " + flags.get("credit") + " item(s). You should probably take one.\n";
+				} else if(flags.get("credit") < 0) {
+					d += "You've taken " + (flags.get("credit")*-1) + " item(s). You should probably leave one.\n";
+				} else {
+					d += "(You can leave items on the table with the command \"leave/put <slot number>\".\n";
+				}
+				
+				d += "There are exits to the west and south; both of them are flanked by guards.";
 				break;
 		}
 		
@@ -454,18 +728,19 @@ public class Room {
 		switch(cmd) {
 			//PRINT LIST OF COMMANDS (HELP)
 			case "h":
-				//output is a bit hard to read. TODO: make the output from the help command nicer
 				System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=>");
 				System.out.printf(" |  %-20s |%n", "Command List");
 				System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=>\n");
 
-				System.out.println(" - Room Commands - Can be used while in a room.");
+				System.out.println(" - Interactive Room Commands - Move in or interact with a room.");
 				System.out.println("(direction)/(first letter of direction): \n > Move in the specified direction; e.g. type \"north\" or \"n\" to move north.\n");
 				System.out.println("take/grab/pickup/t <object>: \n > Attempt to put an object in a room into your inventory.\n");
 				System.out.println("open/o <object>: \n > Open a container in a room. May be locked.\n");
-				System.out.println("examine/x <object>: \n > Examine an object in a room. You may have further actions.\n");
+				System.out.println("examine/x <object>: \n > Examine an object in a room. This may reveal something hidden.\n");
 				System.out.println("smash/hit/attack/destroy/a <object>: \n > Attempt to destroy an object.\n");
-				
+				System.out.println("(anything else) <object>: \n > If you think you can interact in a different way, try it! drink, jump, etc. might work, depending on the object.\n");
+
+				System.out.println("\n - Other Room Commands - Other commands that you can use in a room.");
 				System.out.println("help/h: \n > Shows the Command List. Synonyms are seperated by slashes; use only one of them. Parameters are in <>.\n");
 				System.out.println("inventory/inv/i: \n > Opens inventory (shows your items & stats)\n");
 				System.out.println("use/eat/drink/equip <slot number>: \n > Uses or equips the item in the given inventory slot.\n");
@@ -528,7 +803,7 @@ public class Room {
 						System.out.println("\n\n <=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=>");
 						System.out.printf(" |  %-30s |%n", w.name);
 						System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=>");
-						System.out.printf("%d damage | %d hit | %d crit%n", w.damage, w.hit, w.crit);
+						System.out.printf(" %d damage | %d hit | %d crit%n", w.damage, w.hit, w.crit);
 							
 						System.out.println(w.description);
 						
@@ -538,7 +813,7 @@ public class Room {
 						System.out.println("\n\n <=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=>");
 						System.out.printf(" |  %-30s |%n", a.name);
 						System.out.println(" <=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=>");
-						System.out.printf("%d defense | %d encumbrance%n", a.defense, a.encumbrance);
+						System.out.printf(" %d defense | %d encumbrance%n", a.defense, a.encumbrance);
 						
 						System.out.println(a.description);
 					} else { //examine other
@@ -559,8 +834,7 @@ public class Room {
 				try { //if you entered a number, then it continues with the code...
 					x = Integer.parseInt(parameter) - 1;
 				} catch(NumberFormatException e) { //otherwise, it stops the code
-					System.out.println("\n(Invalid input; try again)");
-					return true;
+					return false;
 				}
 				
 				try { //use the item, if the item exists
@@ -576,8 +850,7 @@ public class Room {
 				try { //if you entered a number, then it continues with the code...
 					x = Integer.parseInt(parameter) - 1;
 				} catch(NumberFormatException e) { //otherwise, it stops the code
-					System.out.println("\n(Invalid input; try again)");
-					return true;
+					return false;
 				}
 				
 				try { //eat the item, if the item exists
@@ -609,13 +882,12 @@ public class Room {
 				try { //if you entered a number, then it continues with the code...
 					x = Integer.parseInt(parameter) - 1;
 				} catch(NumberFormatException e) { //otherwise, it stops the code
-					System.out.println("\n(Invalid input; try again)");
-					return true;
+					return false;
 				}
 				
 				try { //equip the item, if the item exists
 					Item i = Main.p.inventory.get(x);
-					return i.equip(Main.p, x);
+					return i.equip(Main.p, x, room);
 				} catch(IndexOutOfBoundsException e) { //if the number you inputted doesn't exist, then it tells you and does nothing
 					System.out.println("\n(Invalid input; try again)");
 					return true;
