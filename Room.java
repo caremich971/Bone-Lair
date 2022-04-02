@@ -34,6 +34,7 @@ public class Room {
 			case 3:
 				id = "fountain";
 				title = "Sparkling Fountain";
+				flags.put("drinks", 0);
 				break;
 			case 4:
 				id = "gallery";
@@ -185,7 +186,7 @@ public class Room {
 							break;
 						case "e":
 							room.flags.put("firstEntry", 0);
-							enterRoom("fountain", "e");
+							enterRoom("fountain", "w");
 							break;
 						case "x":
 							if(cmd[1].equals("chest")) {
@@ -210,7 +211,7 @@ public class Room {
 									System.out.println("You turn the key. A click can be heard as the chest unlocks. \n\nYou found...");
 									Main.enterAnything();
 									
-									System.out.println("THE SKELETON APPEARS \n\n ");
+									System.out.println("THE SKELETON APPEARS \n ");
 									Main.enterAnything();
 									
 									Battler.battle(Main.p, 0);
@@ -322,16 +323,46 @@ public class Room {
 							System.out.println("\n(Invalid input; try again)");
 							continue;
 						case "s":
-							enterRoom("pit room", "w");
+							enterRoom("pit room", "n");
 							break;
 						case "e":
 							enterRoom("take1leave1", "w");
 							break;
 						case "w":
-							enterRoom("start", "w");
+							enterRoom("start", "e");
 							break;
 						case "x":
-							break;
+							if(cmd[1].equals("fountain")) {
+								System.out.println("A large fountain. It's surprisingly clean. The water flowing through the fountain looks oddly alluring...");
+							}
+							else {
+								System.out.println("\n(Invalid input; try again)");
+							}
+							continue;
+						case "drink":
+							if(cmd[1].equals("fountain") || cmd[1].equals("water")) {
+								if(room.flags.get("drinks") == 2) {
+									System.out.println("After that last drink there's no way you're going near that fountain again. You don't know what it'll do to you.");
+								}
+
+								else if  (room.flags.get("drinks") == 1) {
+									System.out.print("After the last drink you feel 10 years younger! \nYou decide to take another sip of the miraculous liquid and you can feel its effects immediately. You soon notice in a panic that the effects are too potent!\nYou feel yourself go from the body of a 25 year old to the body of a 12 year old in seconds and the experience is definitely unpleasant.\nYou lost 2 STR and 2 STM.\n");
+									Main.p.stamina = Main.p.stamina-2;
+									Main.p.strength = Main.p.strength-2;
+									Main.p.curHP = Main.p.maxHP;
+									room.flags.put("drinks", 2);
+									Main.enterAnything();
+								}
+								else {
+									System.out.print("You walk over to the fountain and slowly take a long sip.\nThe effects start quickly with all of your aches and pains fading away.\nAfter the process you feel good as new!\n");
+									Main.p.curHP = Main.p.maxHP;
+									room.flags.put("drinks", 1);
+									Main.enterAnything();
+								}
+							} else {
+								System.out.println("\n(Invalid input; try again)");
+							}
+							continue;
 					}
 				// Room 4 Painting Hall
 				case "gallery":
@@ -379,9 +410,9 @@ public class Room {
 									System.out.println("\nYou approach the painting of the skeleton and notice something strange - a hinge along one of the edges. \n"
 													+ "You pull it open like a door, revealing a secret passage!");
 									enterRoom("levers 1", "n");
+									break;
 								}
 							}
-							break;
 					}
 				
 				
@@ -670,6 +701,12 @@ public class Room {
 					//TODO
 					d = "TODO: when the gargoyles are disabled";
 				}
+				break;
+				
+			case "fountain":
+				d = "You enter a pleasant-looking room which resembles a forest clearing. Though you’re still indoors, the floor is covered in grass, and the walls are lined with trees. \n"
+						+ "However, what really draws your attention is the large fountain in the middle of the clearing. The water is sparkling, and just standing here you feel healthier.\n"
+						+ "There are exits to the west, east, and south, but it might be nice to stay a while...\n";
 				break;
 				
 			//Gallery

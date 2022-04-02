@@ -111,6 +111,11 @@ public class Item {
 				drinkable = true;
 				edible = true;
 				break;
+			case 18:
+				name = "Fountain Soda";
+				description = "Water from a strange fountain.";
+				drinkable = true;
+				break;
 		}
 		
 		if(shorthand == null) {
@@ -148,6 +153,12 @@ public class Item {
 				} else {
 					System.out.println("You're at full health.");
 					return false;
+				}
+			case "Empty Flask":
+				if(room.id.equals("fountain")) {
+					user.inventory.set(index, new Item(16)); // Need to make this fountain water flask
+					System.out.println("You fill the flask with the water from the fountain. You feel like this could come in handy later.");
+					return true;
 				}
 		}
 		return false;
