@@ -111,6 +111,7 @@ public class Player {
 	}
 	
 	public void addToInv(Item item) {
+		System.out.println("You got the " + item.name + "!");
 		if(inventory.size() < 9) {
 			inventory.add(item);
 		} else {
@@ -143,8 +144,8 @@ public class Player {
 		}
 	}
 	
-	//skill check. average difficulty is 16-18
-	public boolean skillCheck(int difficulty, String stat) {
+	//skill check. average difficulty is 16-18. returns how much you passed or failed by; if it returns >= 0, you pass
+	public int skillCheck(int difficulty, String stat) {
 		int base;
 		switch(stat) {
 			case "strength":
@@ -154,7 +155,7 @@ public class Player {
 				base = stamina;
 				break;
 			case "speed": 
-				base = speed;
+				base = speed - Main.p.armour.encumbrance;
 				break;
 			default: 
 			case "skill":
@@ -165,7 +166,7 @@ public class Player {
 				break;
 		}
 		
-		return (Main.rollDice(12, 1) + base >= difficulty);
+		return (Main.rollDice(12, 1) + base - difficulty);
 	}
 	
 	public void checkHP() {
