@@ -28,7 +28,7 @@ public class Main {
 			rooms.put(r.id, r);
 		}
 		
-		Room.enterRoom("start", "s");
+		Room.enterRoom("start", Room.SOUTH);
 	}
 	
 	//Dice Roller - used for stats, combat, skill checks, and basically anything which revolves around rng

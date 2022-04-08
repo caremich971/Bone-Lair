@@ -183,12 +183,11 @@ public class Battler {
 			turn++;
 		}
 		p.checkHP();
-		System.out.println("You defeated " + e.name + "!\n");
+		System.out.println(e.defeatText + "\n");
 		
 		//item drops
 		if(e.drops != null) {
 			for(Item i : e.drops) {
-				System.out.println("You got the " + i.name + "!");
 				p.addToInv(i);
 			}
 		}
